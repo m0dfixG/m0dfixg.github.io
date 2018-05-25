@@ -185,6 +185,14 @@
 			width: 39px;
 		}
 		
+		.popup .body .copy{
+			background: darkred;
+			border-radius: 8px;
+			color: white;
+			cursor: pointer;
+			padding: 8px;
+		}
+		
 	</style>
 	
 	<script type="text/javascript">
@@ -325,7 +333,11 @@
 						break;
 					case 'how': 
 						title.textContent = 'How to Use';
-						body.innerHTML = 'Tool > Check : Check content of editor to another window.<br>Tool > Fix : Delete operation history for disabling undo and redo.<br>Edit > Copy : Copy to Clipboard<br>Edit > Undo : Change previous one character operation<br>Edit > Redo : Change next one character operation<br>Edit > Reset : Reloading this application<br>Mode : Change mode to Full character or Half character';
+						body.innerHTML = 'Tool > Check : Check content of editor to another window.<br>Tool > Fix : Delete operation history for disabling undo and redo.<br><br>Edit > Copy : Copy to Clipboard<br>Edit > Undo : Change previous one character operation<br>Edit > Redo : Change next one character operation<br>Edit > Reset : Reloading this application<br><br>Mode : Change mode to Full character or Half character';
+						break;
+					case 'donate': 
+						title.textContent = 'Donate';
+						body.innerHTML = 'BTC Donate : 3DZHztrkLRB2VZ9u8xa8Y4KtebBVFPB4u8 <a onclick="copy_donate()" class="copy">Copy</a><br><br>For keep my motivation up.';
 						break;
 					default:
 						break;
@@ -334,6 +346,15 @@
 			}else{
 				d.style.display = 'none';
 			}
+		}
+		
+		function copy_donate(){
+			var el = document.createElement("textarea");
+			el.value = '3DZHztrkLRB2VZ9u8xa8Y4KtebBVFPB4u8';
+			document.body.appendChild(el);
+			el.select();
+			document.execCommand('copy');
+			document.body.removeChild(el);
 		}
 		
 		function copy(){
@@ -433,9 +454,10 @@
 				<div class="droplink">
 					<a onclick="popup('about')">About</a>
 					<a onclick="popup('how')">How to Use</a>
-					<a onclick="popup('bug')">Bug Report</a>
-					<a onclick="popup('suggest')">Suggest</a>
-					<a onclick="popup('contact')">Contact</a>
+					<a href="https://github.com/m0dfixG/m0dfixg.github.io/issues/new" target="_BLANK">Bug Report</a>
+					<a href="https://github.com/m0dfixG/m0dfixg.github.io/issues/new" target="_BLANK">Suggest</a>
+					<a href="https://github.com/m0dfixG/m0dfixg.github.io/issues/new" target="_BLANK">Contact</a>
+					<a onclick="popup('donate')">Donate</a>
 				</div>
 			</div>
 		</div>
