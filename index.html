@@ -2,485 +2,485 @@
 <html>
 <!--#e1e1b2 #a0c58d #77a37e #618390 #3d4f6d-->
 <head>
-	<meta charset="UTF-8">
-	<title>Box AA Simulator</title>
-	<style type="text/css">
-		html{height: 100%;}
-		
-		body{
-			display: flex;
-			flex-direction: column;
-			height: 100%;
-			margin: 0;
-			padding: 0;
-		}
-		
-		::selection{background: rgba(0,0,0,0);}
-		
-		.header{
-			background-color: #77a37e;
-			color: #e1e1b2;
-		}
-		
-		.header h1{
-			margin: 16px 0;
-			padding: 16px;
-		}
-		
-		.sub{
-			background-color: #618390;
-			display: block;
-		}
-		
-		.sub .dropdown{
-			display: inline-block;
-			position: relative;
-			
-		}
-		.sub .dropbtn{
-			padding: 16px;
-		}
-		.sub .droplink{
-			box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-			display: none;
-			position: absolute;
-			z-index: 1;
-		}
-		
-		.sub .droplink a{
-			background-color: #618390;
-			color: #e1e1b2;
-			cursor: pointer;
-			display: inline-block;
-			padding: 16px;
-			text-decoration: none;
-			white-space: nowrap;
-		}
-		
-		.sub .droplink a:hover{box-shadow: 0 0 15px #77a37e inset;}
-		
-		.sub .dropbtn:hover{
-			background:#618390;
-			box-shadow: 0 0 15px #77a37e inset;	
-		}
-		.sub .dropdown:hover .droplink{
-			display: flex;
-			flex-direction: column;
-		}
-		
-		.control{
-			display: flex;
-			flex: 1 1 100%;
-			flex-direction: row;
-			height: 100%;
-		}
-		
-		.menu{
-			background-color: #3d4f6d;
-			color: #e1e1b2;
-			flex: 1 1 20%;
-			overflow-y: auto;
-			padding: 16px;
-			word-break : break-all;
-		}
-		
-		.menu > span{
-			box-shadow: 0 1px 3px black;
-			display: inline-block;
-			font-family: monospace;
-			font-size: 36px;
-			font-weight: bold;
-			height: 48px;
-			line-height: 48px;
-			margin: 4px;
-			text-align: center;
-			width: 48px;
-		}
-		
-		.menu > span:hover{background: #618390;}
-		.menu > h2{margin: 0 0 16px 0;}
-		
-		.edit{
-			background-color: #e1e1b2;
-			position: relative;
-			flex: 1 1 80%;
-			font-size: 24px;
-			overflow: auto;
-			padding: 16px;
-		}
-		
-		.edit > span{
-			color: #3d4f6d;
-			display: inline-block;
-			font-family: monospace;
-			height: 24px;
-			position: absolute;
-			text-align: center;
-			width: 24px;
-		}
-		
-		.popup{
-			background: rgba(0,0,0,0.5);
-			display: none;
-			height: 100%;
-			left: 0;
-			position: fixed;
-			top: 0;
-			width: 100%;
-			z-index: 1;
-		}
-		
-		.popup > div{
-			background: white;
-			border: 5px solid gray;
-			border-radius: 16px;
-			box-shadow: 0 1px 15px rgba(0,0,0,0.5);
-			height: 360px;
-			left: 50%;
-			margin-left: -240px;
-			margin-top: -180px;
-			padding: 16;
-			position: fixed;
-			top: 50%;
-			width: 480px;
-		}
-		
-		.popup .message{
-			box-shadow: 0 0 16px gray inset;
-			height: 288px;
-			margin: 36px;
-			overflow-y: auto;
-		}
-		
-		.popup .message .title{text-align: center;}
-		.popup .message .body{margin: 0 16px;}
-		
-		.popup .close{
-			background: gray;
-			display: inline-block;
-			height: 36px;
-			left: 0;
-			position: absolute;
-			top: 0;
-			width: 36px;
-		}
-		
-		.popup .close .mark_up{
-			background: white;
-			height: 2px;
-			left: 0;
-			position: absolute;
-			top: 18px;
-			transform: rotate(45deg);
-			width: 39px;
-		}
-		
-		.popup .close .mark_down{
-			background: white;
-			height: 2px;
-			left: 0;
-			position: absolute;
-			top: 18px;
-			transform: rotate(-45deg);
-			width: 39px;
-		}
-		
-		.popup .body .copy{
-			background: darkred;
-			border-radius: 8px;
-			color: white;
-			cursor: pointer;
-			padding: 8px;
-		}
-		
-	</style>
-	
-	<script type="text/javascript">
-		var target;
-		var isHalf = encodeURIComponent(location.hash) === '%23half';
-	
-		var full_char = [12288, 9473,9475, 9487, 9491, 9499, 9495, 9507, 9523, 9515, 9531, 9547, 9504, 9519, 9512, 9527, 9535, 9501, 9520, 9509, 9528, 9538, 9150, 9151, 9152, 9153, 9154, 9155, 9156, 9157, 9158, 9159 ,9160 ,9161, 9162, 9163, 9164, 65507, 65343];
-		
-		var half_char = [20, 9472, 9474, 9484, 9488, 9492, 9496, 9500, 9516, 9508, 9524, 9532, 9476, 9477, 9478, 9479, 9480, 9481, 9482, 9483, 9485, 9486, 9489, 9490, 9493, 9494, 9497, 9498, 9502, 9503, 9505, 9506, 9510, 9511, 9513, 9514, 9517, 9518, 9521, 9522, 9525, 9526, 9529, 9530, 9533, 9534, 9536, 9537, 9539, 9540, 9541, 9542, 9543, 9544, 9545, 9546, 9548, 9549, 9550, 9551, 9552, 9553, 9554, 9555, 9556, 9557, 9558, 9559, 9560, 9561, 9562, 9563, 9564, 9565, 9566, 9567, 9568, 9569, 9570, 9571, 9572, 9573, 9574, 9575, 9576, 9577, 9578, 9579, 9580, 9581, 9582, 9583, 9584, 9585, 9586, 9587, 9588, 9589, 9590, 9591, 9592, 9593 ,9594, 9595, 9596, 9597, 9598, 9599, 8254, 95];
-	
-		function init(){
-			window.document.onkeydown = function(event){key_action(event)};
-			document.onselectstart = function(){return false};
-			
-			if(!isHalf){
-				for(var i = 0;i < full_char.length;i++)make_button(full_char[i]);
-			}else{
-				for(var i = 0;i < half_char.length;i++)make_button(half_char[i]);
-			}
-			popup();
-		}
-		
-		function make_button(id){
-			var d = document.createElement('span');
-			d.innerHTML = '&#' + id + ';';
-			d.onclick = function(){
-				if(target)button_change(target);
-				if(target != this)button_change(this);
-			};
-			document.getElementById('menu').appendChild(d);
-		}
-		
-		function button_change(dom){
-			if(!dom.selected){
-				dom.selected = true;
-				dom.style.backgroundColor = '#618390';
-				target = dom;
-			}else{
-				dom.selected = false;
-				dom.style.backgroundColor = '#3d4f6d';
-				target = null;
-			}
-		}
-		
-		var clicking = false;
-		var array = [];
-		var undo_history = [];
-		var redo_history = [];
-		
-		function onMouseDown(event){
-			clicking = true;
-			place(event);
-		}
-		
-		function onMouseMove(event){
-			if(clicking){
-				place(event);
-			}
-		}
-		
-		function onMouseUp(event){
-			clicking = false;
-		}
-		
-		function place(event){
-			if(!target)return;
-		
-			var d = document.getElementById('edit');
-			var rect = d.getBoundingClientRect();
-			var x = Math.round((event.clientX - rect.left - 28) / 24);
-			var y = Math.round((event.clientY - rect.top - 28) / 24);
-			
-			if(x < 0 || y < 0)return;
-			
-			if(!array[y])array[y] = [];
-			
-			if(!array[y][x]){
-				var k = document.createElement('span');
-				k.style.left =  x * 24 + 16 + 'px';
-				k.style.top =  y * 24 + 16 + 'px';
-				array[y][x] = k
-				d.appendChild(k);
-			}
-			
-			if(array[y][x].innerHTML !== target.innerHTML){
-				var b = array[y][x].innerHTML;
-				array[y][x].innerHTML = target.innerHTML;
-				undo_history.push(new HistoryNode(x, y, b));
-				redo_history = [];
-			}
-		}
-		
-		class HistoryNode{
-			constructor(x, y, inner){
-				this.x = x;
-				this.y = y;
-				this.inner = inner;
-			}
-		}
-		
-		function undo(){
-			if(undo_history.length > 0){
-				var n = undo_history.pop();
-				var b = array[n.y][n.x].innerHTML;
-				array[n.y][n.x].innerHTML = n.inner;
-				redo_history.push(new HistoryNode(n.x, n.y, b));
-			}
-		}
-		
-		function redo(){
-			if(redo_history.length > 0){
-				var n = redo_history.pop();
-				var b = array[n.y][n.x].innerHTML;
-				array[n.y][n.x].innerHTML = n.inner;
-				undo_history.push(new HistoryNode(n.x, n.y, b));
-			}
-		}
-		
-		function fix(){
-			undo_history = [];
-			redo_history = [];
-		}
-		
-		function reset(){
-			location.reload();
-		}
-		
-		function popup(message){
-			var d = document.getElementById('popup');
-			if(d.style.display == 'none'){
-				title = document.getElementById('title');
-				body = document.getElementById('body');
-				
-				switch(message){
-					case 'about': 
-						title.textContent = 'About';
-						body.textContent = 'this is a web application. :)';
-						break;
-					case 'how': 
-						title.textContent = 'How to Use';
-						body.innerHTML = 'Tool > Check : Check content of editor to another window.<br>Tool > Fix : Delete operation history for disabling undo and redo.<br><br>Edit > Copy : Copy to Clipboard<br>Edit > Undo : Change previous one character operation<br>Edit > Redo : Change next one character operation<br>Edit > Reset : Reloading this application<br><br>Mode : Change mode to Full character or Half character';
-						break;
-					case 'donate': 
-						title.textContent = 'Donate';
-						body.innerHTML = 'BTC Donate : 3DZHztrkLRB2VZ9u8xa8Y4KtebBVFPB4u8 <a onclick="copy_donate()" class="copy">Copy</a><br><br>For keep my motivation up.';
-						break;
-					default:
-						break;
-				}
-				d.style.display = 'block';
-			}else{
-				d.style.display = 'none';
-			}
-		}
-		
-		function copy_donate(){
-			var el = document.createElement("textarea");
-			el.value = '3DZHztrkLRB2VZ9u8xa8Y4KtebBVFPB4u8';
-			document.body.appendChild(el);
-			el.select();
-			document.execCommand('copy');
-			document.body.removeChild(el);
-		}
-		
-		function copy(){
-			var el = document.createElement("textarea");
-			for(var y = 0; y < array.length;y++){
-				if(array[y]){
-					for(var x = 0;x < array[y].length;x++){
-						if(array[y][x] != null){
-							el.value += array[y][x].innerHTML;
-						}else{
-							el.value += '&#' + (!isHalf ? full_char[0] : half_char[0]) + ';';
-						}
-					}
-					el.value += '\n';
-				}
-			}
-			document.body.appendChild(el);
-			el.select();
-			document.execCommand('copy');
-			document.body.removeChild(el);
-		}
-		
-		var subwindow;
-		
-		function check(){
-			if(subwindow)subwindow.close();
-			subwindow = window.open('', 'Preview', 'left=' + ((window.screen.width - 320)/2) + ',top=' + ((window.screen.height - 320)/2) + ', width=320, height=320,menubar=no,toolbar=no,location=no,status=no,resizable=no,scrollbars=no');
-				
-				subwindow.document.write('<html><head><title>Result</title></head><body style="overflow:scroll"><code>');
-				for(var y = 0; y < array.length;y++){
-					if(array[y]){
-						for(var x = 0;x < array[y].length;x++){
-							if(array[y][x] != null){
-								subwindow.document.write(array[y][x].innerHTML);
-							}else{
-								subwindow.document.write('&#' + (!isHalf ? full_char[0] : half_char[0])+ ';');
-							}
-						}
-					}
-					subwindow.document.write('<br>');
-				}
-				subwindow.document.write('</code></body></html>');
-		}
-		
-		function key_action(v){
-			var ctrl = v.metakey || v.ctrlKey;
-			if(v.keyCode === 90){
-				if(ctrl){
-					if(v.shiftKey){
-						redo();
-					}else{
-						undo();
-					}
-				}
-			}else if(v.keyCode === 89){
-				if(ctrl){
-					redo();
-				}
-			}else if(v.keyCode === 83){
-				if(ctrl){
-					check();
-				}
-			}
-		}
-		
-	</script>
+  <meta charset="UTF-8">
+  <title>Box AA Simulator</title>
+  <style type="text/css">
+    html{height: 100%;}
+    
+    body{
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    
+    ::selection{background: rgba(0,0,0,0);}
+    
+    .header{
+      background-color: #77a37e;
+      color: #e1e1b2;
+    }
+    
+    .header h1{
+      margin: 16px 0;
+      padding: 16px;
+    }
+    
+    .sub{
+      background-color: #618390;
+      display: block;
+    }
+    
+    .sub .dropdown{
+      display: inline-block;
+      position: relative;
+      
+    }
+    .sub .dropbtn{
+      padding: 16px;
+    }
+    .sub .droplink{
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      display: none;
+      position: absolute;
+      z-index: 1;
+    }
+    
+    .sub .droplink a{
+      background-color: #618390;
+      color: #e1e1b2;
+      cursor: pointer;
+      display: inline-block;
+      padding: 16px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    
+    .sub .droplink a:hover{box-shadow: 0 0 15px #77a37e inset;}
+    
+    .sub .dropbtn:hover{
+      background:#618390;
+      box-shadow: 0 0 15px #77a37e inset;  
+    }
+    .sub .dropdown:hover .droplink{
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .control{
+      display: flex;
+      flex: 1 1 100%;
+      flex-direction: row;
+      height: 100%;
+    }
+    
+    .menu{
+      background-color: #3d4f6d;
+      color: #e1e1b2;
+      flex: 1 1 20%;
+      overflow-y: auto;
+      padding: 16px;
+      word-break : break-all;
+    }
+    
+    .menu > span{
+      box-shadow: 0 1px 3px black;
+      display: inline-block;
+      font-family: monospace;
+      font-size: 36px;
+      font-weight: bold;
+      height: 48px;
+      line-height: 48px;
+      margin: 4px;
+      text-align: center;
+      width: 48px;
+    }
+    
+    .menu > span:hover{background: #618390;}
+    .menu > h2{margin: 0 0 16px 0;}
+    
+    .edit{
+      background-color: #e1e1b2;
+      position: relative;
+      flex: 1 1 80%;
+      font-size: 24px;
+      overflow: auto;
+      padding: 16px;
+    }
+    
+    .edit > span{
+      color: #3d4f6d;
+      display: inline-block;
+      font-family: monospace;
+      height: 24px;
+      position: absolute;
+      text-align: center;
+      width: 24px;
+    }
+    
+    .popup{
+      background: rgba(0,0,0,0.5);
+      display: none;
+      height: 100%;
+      left: 0;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1;
+    }
+    
+    .popup > div{
+      background: white;
+      border: 5px solid gray;
+      border-radius: 16px;
+      box-shadow: 0 1px 15px rgba(0,0,0,0.5);
+      height: 360px;
+      left: 50%;
+      margin-left: -240px;
+      margin-top: -180px;
+      padding: 16;
+      position: fixed;
+      top: 50%;
+      width: 480px;
+    }
+    
+    .popup .message{
+      box-shadow: 0 0 16px gray inset;
+      height: 288px;
+      margin: 36px;
+      overflow-y: auto;
+    }
+    
+    .popup .message .title{text-align: center;}
+    .popup .message .body{margin: 0 16px;}
+    
+    .popup .close{
+      background: gray;
+      display: inline-block;
+      height: 36px;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 36px;
+    }
+    
+    .popup .close .mark_up{
+      background: white;
+      height: 2px;
+      left: 0;
+      position: absolute;
+      top: 18px;
+      transform: rotate(45deg);
+      width: 39px;
+    }
+    
+    .popup .close .mark_down{
+      background: white;
+      height: 2px;
+      left: 0;
+      position: absolute;
+      top: 18px;
+      transform: rotate(-45deg);
+      width: 39px;
+    }
+    
+    .popup .body .copy{
+      background: darkred;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      padding: 8px;
+    }
+    
+  </style>
+  
+  <script type="text/javascript">
+    var target;
+    var isHalf = encodeURIComponent(location.hash) === '%23half';
+  
+    var full_char = [12288, 9473,9475, 9487, 9491, 9499, 9495, 9507, 9523, 9515, 9531, 9547, 9504, 9519, 9512, 9527, 9535, 9501, 9520, 9509, 9528, 9538, 9150, 9151, 9152, 9153, 9154, 9155, 9156, 9157, 9158, 9159 ,9160 ,9161, 9162, 9163, 9164, 65507, 65343];
+    
+    var half_char = [20, 9472, 9474, 9484, 9488, 9492, 9496, 9500, 9516, 9508, 9524, 9532, 9476, 9477, 9478, 9479, 9480, 9481, 9482, 9483, 9485, 9486, 9489, 9490, 9493, 9494, 9497, 9498, 9502, 9503, 9505, 9506, 9510, 9511, 9513, 9514, 9517, 9518, 9521, 9522, 9525, 9526, 9529, 9530, 9533, 9534, 9536, 9537, 9539, 9540, 9541, 9542, 9543, 9544, 9545, 9546, 9548, 9549, 9550, 9551, 9552, 9553, 9554, 9555, 9556, 9557, 9558, 9559, 9560, 9561, 9562, 9563, 9564, 9565, 9566, 9567, 9568, 9569, 9570, 9571, 9572, 9573, 9574, 9575, 9576, 9577, 9578, 9579, 9580, 9581, 9582, 9583, 9584, 9585, 9586, 9587, 9588, 9589, 9590, 9591, 9592, 9593 ,9594, 9595, 9596, 9597, 9598, 9599, 8254, 95];
+  
+    function init(){
+      window.document.onkeydown = function(event){key_action(event)};
+      document.onselectstart = function(){return false};
+      
+      if(!isHalf){
+        for(var i = 0;i < full_char.length;i++)make_button(full_char[i]);
+      }else{
+        for(var i = 0;i < half_char.length;i++)make_button(half_char[i]);
+      }
+      popup();
+    }
+    
+    function make_button(id){
+      var d = document.createElement('span');
+      d.innerHTML = '&#' + id + ';';
+      d.onclick = function(){
+        if(target)button_change(target);
+        if(target != this)button_change(this);
+      };
+      document.getElementById('menu').appendChild(d);
+    }
+    
+    function button_change(dom){
+      if(!dom.selected){
+        dom.selected = true;
+        dom.style.backgroundColor = '#618390';
+        target = dom;
+      }else{
+        dom.selected = false;
+        dom.style.backgroundColor = '#3d4f6d';
+        target = null;
+      }
+    }
+    
+    var clicking = false;
+    var array = [];
+    var undo_history = [];
+    var redo_history = [];
+    
+    function onMouseDown(event){
+      clicking = true;
+      place(event);
+    }
+    
+    function onMouseMove(event){
+      if(clicking){
+        place(event);
+      }
+    }
+    
+    function onMouseUp(event){
+      clicking = false;
+    }
+    
+    function place(event){
+      if(!target)return;
+    
+      var d = document.getElementById('edit');
+      var rect = d.getBoundingClientRect();
+      var x = Math.round((event.clientX - rect.left - 28) / 24);
+      var y = Math.round((event.clientY - rect.top - 28) / 24);
+      
+      if(x < 0 || y < 0)return;
+      
+      if(!array[y])array[y] = [];
+      
+      if(!array[y][x]){
+        var k = document.createElement('span');
+        k.style.left =  x * 24 + 16 + 'px';
+        k.style.top =  y * 24 + 16 + 'px';
+        array[y][x] = k
+        d.appendChild(k);
+      }
+      
+      if(array[y][x].innerHTML !== target.innerHTML){
+        var b = array[y][x].innerHTML;
+        array[y][x].innerHTML = target.innerHTML;
+        undo_history.push(new HistoryNode(x, y, b));
+        redo_history = [];
+      }
+    }
+    
+    class HistoryNode{
+      constructor(x, y, inner){
+        this.x = x;
+        this.y = y;
+        this.inner = inner;
+      }
+    }
+    
+    function undo(){
+      if(undo_history.length > 0){
+        var n = undo_history.pop();
+        var b = array[n.y][n.x].innerHTML;
+        array[n.y][n.x].innerHTML = n.inner;
+        redo_history.push(new HistoryNode(n.x, n.y, b));
+      }
+    }
+    
+    function redo(){
+      if(redo_history.length > 0){
+        var n = redo_history.pop();
+        var b = array[n.y][n.x].innerHTML;
+        array[n.y][n.x].innerHTML = n.inner;
+        undo_history.push(new HistoryNode(n.x, n.y, b));
+      }
+    }
+    
+    function fix(){
+      undo_history = [];
+      redo_history = [];
+    }
+    
+    function reset(){
+      location.reload();
+    }
+    
+    function popup(message){
+      var d = document.getElementById('popup');
+      if(d.style.display == 'none'){
+        title = document.getElementById('title');
+        body = document.getElementById('body');
+        
+        switch(message){
+          case 'about': 
+            title.textContent = 'About';
+            body.textContent = 'this is a web application. :)';
+            break;
+          case 'how': 
+            title.textContent = 'How to Use';
+            body.innerHTML = 'Tool > Check : Check content of editor to another window.<br>Tool > Fix : Delete operation history for disabling undo and redo.<br><br>Edit > Copy : Copy to Clipboard<br>Edit > Undo : Change previous one character operation<br>Edit > Redo : Change next one character operation<br>Edit > Reset : Reloading this application<br><br>Mode : Change mode to Full character or Half character';
+            break;
+          case 'donate': 
+            title.textContent = 'Donate';
+            body.innerHTML = 'BTC Donate : 3DZHztrkLRB2VZ9u8xa8Y4KtebBVFPB4u8 <a onclick="copy_donate()" class="copy">Copy</a><br><br>For keep my motivation up.';
+            break;
+          default:
+            break;
+        }
+        d.style.display = 'block';
+      }else{
+        d.style.display = 'none';
+      }
+    }
+    
+    function copy_donate(){
+      var el = document.createElement("textarea");
+      el.value = '3DZHztrkLRB2VZ9u8xa8Y4KtebBVFPB4u8';
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+    }
+    
+    function copy(){
+      var el = document.createElement("textarea");
+      for(var y = 0; y < array.length;y++){
+        if(array[y]){
+          for(var x = 0;x < array[y].length;x++){
+            if(array[y][x] != null){
+              el.value += array[y][x].innerHTML;
+            }else{
+              el.value += '&#' + (!isHalf ? full_char[0] : half_char[0]) + ';';
+            }
+          }
+          el.value += '\n';
+        }
+      }
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+    }
+    
+    var subwindow;
+    
+    function check(){
+      if(subwindow)subwindow.close();
+      subwindow = window.open('', 'Preview', 'left=' + ((window.screen.width - 320)/2) + ',top=' + ((window.screen.height - 320)/2) + ', width=320, height=320,menubar=no,toolbar=no,location=no,status=no,resizable=no,scrollbars=no');
+        
+        subwindow.document.write('<html><head><title>Result</title></head><body style="overflow:scroll"><code>');
+        for(var y = 0; y < array.length;y++){
+          if(array[y]){
+            for(var x = 0;x < array[y].length;x++){
+              if(array[y][x] != null){
+                subwindow.document.write(array[y][x].innerHTML);
+              }else{
+                subwindow.document.write('&#' + (!isHalf ? full_char[0] : half_char[0])+ ';');
+              }
+            }
+          }
+          subwindow.document.write('<br>');
+        }
+        subwindow.document.write('</code></body></html>');
+    }
+    
+    function key_action(v){
+      var ctrl = v.metakey || v.ctrlKey;
+      if(v.keyCode === 90){
+        if(ctrl){
+          if(v.shiftKey){
+            redo();
+          }else{
+            undo();
+          }
+        }
+      }else if(v.keyCode === 89){
+        if(ctrl){
+          redo();
+        }
+      }else if(v.keyCode === 83){
+        if(ctrl){
+          check();
+        }
+      }
+    }
+    
+  </script>
 </head>
 <body onload="init()">
-	<div class="header">
-		<h1>Box AA Simulator</h1>
-		<div class="sub">
-			<div class="dropdown">
-				<div class="dropbtn">Tool</div>
-				<div class="droplink">
-					<a onclick="check()">Check</a>
-					<a onclick="fix()">Fix</a>
-				</div>
-			</div>
-			<div class="dropdown">
-				<div class="dropbtn">Edit</div>
-				<div class="droplink">
-					<a onclick="copy()">Copy</a>
-					<a onclick="undo()">Undo</a>
-					<a onclick="redo()">Redo</a>
-					<a onclick="reset()">Reset</a>
-				</div>
-			</div>
-			<div class="dropdown">
-				<div class="dropbtn">Mode</div>
-				<div class="droplink">
-					<a href="index.html">Full-Width Character Mode</a>
-					<a href="index.html#half" onclick="location.reload()">Half-Width Character Mode <span style="color:red">(WIP)</span></a>
-				</div>
-			</div>
-			<div class="dropdown">
-				<div class="dropbtn">Help</div>
-				<div class="droplink">
-					<a onclick="popup('about')">About</a>
-					<a onclick="popup('how')">How to Use</a>
-					<a href="https://github.com/m0dfixG/m0dfixg.github.io/issues/new" target="_BLANK">Bug Report</a>
-					<a href="https://github.com/m0dfixG/m0dfixg.github.io/issues/new" target="_BLANK">Suggest</a>
-					<a href="https://github.com/m0dfixG/m0dfixg.github.io/issues/new" target="_BLANK">Contact</a>
-					<a onclick="popup('donate')">Donate</a>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="control">
-		<div class="menu" id="menu">
-			<h2>Palette</h2>
-		</div>
-		<div class="edit" id="edit" onmousedown="onMouseDown(event)" onmousemove="onMouseMove(event)" onmouseup="onMouseUp(event)">
-			
-		</div>
-	</div>
-	<div class="popup" id="popup">
-		<div>
-			<div class="message">
-				<h2 class="title" id="title">Error</h2>
-				<div class="body" id="body">Sorry</div>
-			</div>
-			<div class="close" onclick="popup('')">
-				<div class="mark_up"></div>
-				<div class="mark_down"></div>
-			</div>
-		</div>
-	</div>
+  <div class="header">
+    <h1>Box AA Simulator</h1>
+    <div class="sub">
+      <div class="dropdown">
+        <div class="dropbtn">Tool</div>
+        <div class="droplink">
+          <a onclick="check()">Check</a>
+          <a onclick="fix()">Fix</a>
+        </div>
+      </div>
+      <div class="dropdown">
+        <div class="dropbtn">Edit</div>
+        <div class="droplink">
+          <a onclick="copy()">Copy</a>
+          <a onclick="undo()">Undo</a>
+          <a onclick="redo()">Redo</a>
+          <a onclick="reset()">Reset</a>
+        </div>
+      </div>
+      <div class="dropdown">
+        <div class="dropbtn">Mode</div>
+        <div class="droplink">
+          <a href="index.html">Full-Width Character Mode</a>
+          <a href="index.html#half" onclick="location.reload()">Half-Width Character Mode <span style="color:red">(WIP)</span></a>
+        </div>
+      </div>
+      <div class="dropdown">
+        <div class="dropbtn">Help</div>
+        <div class="droplink">
+          <a onclick="popup('about')">About</a>
+          <a onclick="popup('how')">How to Use</a>
+          <a href="https://github.com/m0dfixG/m0dfixg.github.io/issues/new" target="_BLANK">Bug Report</a>
+          <a href="https://github.com/m0dfixG/m0dfixg.github.io/issues/new" target="_BLANK">Suggest</a>
+          <a href="https://github.com/m0dfixG/m0dfixg.github.io/issues/new" target="_BLANK">Contact</a>
+          <a onclick="popup('donate')">Donate</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="control">
+    <div class="menu" id="menu">
+      <h2>Palette</h2>
+    </div>
+    <div class="edit" id="edit" onmousedown="onMouseDown(event)" onmousemove="onMouseMove(event)" onmouseup="onMouseUp(event)">
+      
+    </div>
+  </div>
+  <div class="popup" id="popup">
+    <div>
+      <div class="message">
+        <h2 class="title" id="title">Error</h2>
+        <div class="body" id="body">Sorry</div>
+      </div>
+      <div class="close" onclick="popup('')">
+        <div class="mark_up"></div>
+        <div class="mark_down"></div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
