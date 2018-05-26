@@ -203,6 +203,8 @@
     
     var half_char = [20, 9472, 9474, 9484, 9488, 9492, 9496, 9500, 9516, 9508, 9524, 9532, 9476, 9477, 9478, 9479, 9480, 9481, 9482, 9483, 9485, 9486, 9489, 9490, 9493, 9494, 9497, 9498, 9502, 9503, 9505, 9506, 9510, 9511, 9513, 9514, 9517, 9518, 9521, 9522, 9525, 9526, 9529, 9530, 9533, 9534, 9536, 9537, 9539, 9540, 9541, 9542, 9543, 9544, 9545, 9546, 9548, 9549, 9550, 9551, 9552, 9553, 9554, 9555, 9556, 9557, 9558, 9559, 9560, 9561, 9562, 9563, 9564, 9565, 9566, 9567, 9568, 9569, 9570, 9571, 9572, 9573, 9574, 9575, 9576, 9577, 9578, 9579, 9580, 9581, 9582, 9583, 9584, 9585, 9586, 9587, 9588, 9589, 9590, 9591, 9592, 9593 ,9594, 9595, 9596, 9597, 9598, 9599, 8254, 95];
   
+    function get_space(){return !isHalf ? full_char[0] : half_char[0]}
+    
     function init(){
       window.document.onkeydown = function(event){key_action(event)};
       document.onselectstart = function(){return false};
@@ -314,6 +316,19 @@
     function fix(){
       undo_history = [];
       redo_history = [];
+      for(var y = 0;y < array.length;y++){
+        if(array[y]){
+          var x = array[y].length - 1;
+          while(x >= 0){
+            if(!array[y][x] || array[y][x].innerHTML == String.fromCharCode(get_space())){
+              array[y].pop();
+            }else{
+              break;
+            }
+            x--;
+          }
+        }
+      }
     }
     
     function reset(){
@@ -365,7 +380,7 @@
             if(array[y][x] != null){
               el.value += array[y][x].innerHTML;
             }else{
-              el.value += '&#' + (!isHalf ? full_char[0] : half_char[0]) + ';';
+              el.value += '&#' + get_space() + ';';
             }
           }
           el.value += '\n';
@@ -390,7 +405,7 @@
               if(array[y][x] != null){
                 subwindow.document.write(array[y][x].innerHTML);
               }else{
-                subwindow.document.write('&#' + (!isHalf ? full_char[0] : half_char[0])+ ';');
+                subwindow.document.write('&#' + get_space() + ';');
               }
             }
           }
